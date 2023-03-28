@@ -1,11 +1,11 @@
 from tkinter import *
 
 import ttkbootstrap
-import ttkbootstrap as tb
+import ttkbootstrap as ttk
 import time
 
 
-class ProgressBar(tb.Window):
+class ProgressBar(ttk.Window):
     def __init__(self):
         super().__init__(themename="solar")
         self.title("Chargement")
@@ -13,9 +13,9 @@ class ProgressBar(tb.Window):
         self.iconbitmap("Logo.ico")
 
         self.my_fond = PhotoImage(file="Logo_tfe.png")
-        self.my_background = tb.Label(self, image=self.my_fond)
+        self.my_background = ttk.Label(self, image=self.my_fond)
         self.my_background.place(x=0, y=0, relwidth=1, relheight=1)
-        self.my_progress = tb.Progressbar(self, style="warning-striped", maximum=100, mode="determinate", length=300, value=0)
+        self.my_progress = ttk.Progressbar(self, style="warning-striped", maximum=100, mode="determinate", length=300, value=0)
         self.my_progress.pack(pady=190)
 
     def progression(self):
@@ -25,23 +25,25 @@ class ProgressBar(tb.Window):
             self.my_progress.update()
             self.update_idletasks()
         else:
-            self.destroy()
-            window_app = Sheetcheat()
-            window_app.start_sheetcheat()
-            exit(0)
+            self.withdraw()
+            sheet_cheat_window = Sheetcheat()
 
     def start_progress_bar(self):
         self.mainloop()
 
-class Sheetcheat(tb.Window):
+
+class Sheetcheat(ttk.Toplevel):
     def __init__(self):
         super().__init__()
         self.title("SheetCheat")
         self.iconbitmap("Logo.ico")
         self.geometry("800x400")
+        self.qbutt = ttk.Button(self, command=self.exit_program)
+        self.qbutt.pack()
 
-    def start_sheetcheat(self):
-        self.mainloop()
+    def exit_program(self):
+        exit(0)
+
 
 if __name__ == '__main__':
     app = ProgressBar()
