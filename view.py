@@ -1,4 +1,5 @@
 import time
+import webbrowser
 from tkinter import PhotoImage, messagebox
 from ttkbootstrap.scrolled import ScrolledText
 from tkinter import *
@@ -31,16 +32,16 @@ class Menu_principal(ttk.Window):
         # Création du bouton À propos
         self.new = ttk.Button(
             self.topbar,
-            command=self.editeur,
+            command=Apropos,
             text="A propos",
-            style="info-outline",
+            style="warning-outline",
             width=20,
         )
         self.new.grid(column=1, row=0, pady=5, padx=5, sticky=ttk.W)
 
         # Création du bouton Edition
         self.edit = ttk.Button(
-            self.topbar, command=Editions, text="Edition", style="success-outline", width=20
+            self.topbar, command=Editions, text="Edition", style="warning-outline", width=20
         )
         self.edit.grid(column=0, row=0, pady=5, padx=5, sticky=ttk.W)
 
@@ -54,7 +55,7 @@ class Menu_principal(ttk.Window):
         self.exit = ttk.Button(
             self.topbar,
             command=self.exitapp,
-            text="Exit",
+            text="Quitter",
             style="danger-outline",
             width=17,
         )
@@ -83,7 +84,7 @@ class Menu_principal(ttk.Window):
         mylist.grid(column=1, row=1, sticky=ttk.NS)
         scrollbar.config(command=mylist.yview)
 
-        lb_command = ttk.Label(self.listb, text="Liste des commandes", style="primary")
+        lb_command = ttk.Label(self.listb, text="Liste des commandes", style="warning")
         lb_command.grid(columnspan=2, row=0, sticky=ttk.EW, pady=10, padx=10)
 
         # Création de la ScrolledText
@@ -105,24 +106,53 @@ class Menu_principal(ttk.Window):
         else:
             messagebox.showinfo("Good", "Merci " + Emoji.get("winking face").char * 3)
 
-    @staticmethod
-    def editeur():
-        messagebox.showinfo(
-            "Editeur du programme", "Créer par Jeremy\rhttps://github.com/Jer1420"
+
+class Apropos(ttk.Toplevel):
+    def __init__(self):
+        super().__init__(resizable=(False,False))
+        self.title("")
+        self.iconbitmap("Logo.ico")
+        self.geometry("200x150")
+        self.lb1 = ttk.Frame(self)
+        self.lb2 = ttk.Frame(self)
+        self.bouton = ttk.Frame(self)
+
+        # Création du bouton Ok
+        self.ok = ttk.Button(
+            self.bouton,
+            command=self.destroy,
+            text="Ok",
+            style="warning-outline",
+            width=20
         )
+
+        lb_pseudo = ttk.Label(self.lb1, text="Créé par Jeremy".center(33," "), style="warning")
+        lb_pseudo.grid(column=0, row=0, sticky=ttk.N, pady=10, padx=10)
+        self.lb1.pack(expand=False, fill=ttk.X, side=ttk.TOP, anchor=ttk.N)
+
+        lb_pseudo = ttk.Label(self.lb2, text="https://github.com/Jer1420".center(10," "), style="warning")
+        lb_pseudo.bind("<Button-1>",self.do_open_url)
+        lb_pseudo.grid(column=0, row=0, sticky=ttk.N, pady=10, padx=10)
+        self.lb2.pack(expand=False, fill=ttk.X, side=ttk.TOP, anchor=ttk.N)
+
+        self.ok.grid(column=0, row=0, sticky=ttk.N, pady=10, padx=10)
+        self.bouton.pack(expand=False, fill=ttk.X, side=ttk.TOP, anchor=ttk.N)
+        self.position_center()
+
+    def do_open_url(self,event):
+        webbrowser.open("https://github.com/Jer1420")
+
 
 class Editions(ttk.Toplevel):
     def __init__(self):
-        super().__init__()
+        super().__init__(resizable=(False,False))
         self.title("Edition")
         self.iconbitmap("Logo.ico")
-        self.geometry("1000x600")
+        self.geometry("1250x830")
 
-        self._nom = ttk.StringVar() #entry
-        self._synopsis = ttk.StringVar() #texte
-        self._syntaxe = ttk.StringVar() #entry
-        self._parametre = ttk.StringVar() #texte
-        self._exemple = ttk.StringVar() #texte
+
+        self._nom = ttk.StringVar()
+        self._syntaxe = ttk.StringVar()
 
         self.noms = ttk.Frame(self)
         self.syno = ttk.Frame(self)
@@ -131,29 +161,44 @@ class Editions(ttk.Toplevel):
         self.ex = ttk.Frame(self)
         self.bouton = ttk.Frame(self)
 
-        lb_nom = ttk.Label(self.noms, text="Nom :", style="primary")
-        lb_syno = ttk.Label(self.syno, text="Synopsis :", style="primary")
-        lb_syn = ttk.Label(self.syn, text="Syntaxe :", style="primary")
-        lb_para = ttk.Label(self.para, text="Paramètres :", style="primary")
-        lb_ex = ttk.Label(self.ex, text="Exemples :", style="primary")
+        lb_nom = ttk.Label(self.noms, text= "Nom :        ", style="warning")
+        lb_syno = ttk.Label(self.syno, text="Synopsis :   ", style="warning")
+        lb_syn = ttk.Label(self.syn, text=  "Syntaxe :    ", style="warning")
+        lb_para = ttk.Label(self.para, text="Paramètres :", style="warning")
+        lb_ex = ttk.Label(self.ex, text=    "Exemples :  ", style="warning")
+        lb_invisible = ttk.Label(self.bouton, text="")
 
         lb_nom.grid(column=0, row=0, sticky=ttk.EW, pady=10, padx=10)
         lb_syno.grid(column=0, row=0, sticky=ttk.EW, pady=10, padx=10)
         lb_syn.grid(column=0, row=0, sticky=ttk.EW, pady=10, padx=10)
         lb_para.grid(column=0, row=0, sticky=ttk.EW, pady=10, padx=10)
         lb_ex.grid(column=0, row=0, sticky=ttk.EW, pady=10, padx=10)
+        lb_invisible.grid(column=0, row=0, sticky=ttk.EW, pady=10, padx=10)
 
-        self.nom = ttk.Entry(self.noms, textvariable=self._nom, width=70, style="dark")
-        self.texte_syno = ScrolledText(self.syno, padding=5, autohide=True, hbar=False, textvariable=self._synopsis)
-        self.synta = ttk.Entry(self.syn, textvariable=self._syntaxe, width=70, style="dark")
-        #self.texte_param = ScrolledText(self.para, padding=5, autohide=True, hbar=False)
-        #self.texte_exemple = ScrolledText(self.ex, padding=5, autohide=True, hbar=False)
+        self.nom = ttk.Entry(self.noms, textvariable=self._nom, width=115, style="dark")
+        self.synta = ttk.Entry(self.syn, textvariable=self._syntaxe, width=141, style="dark")
+
+        self.nom.columnconfigure(1, weight=1)
+        self.syno.columnconfigure(1,weight=1)
+        self.synta.columnconfigure(1,weight=1)
+        self.para.columnconfigure(1,weight=1)
+        self.ex.columnconfigure(1,weight=1)
+
+        self.txt_synopsis = Text(self.syno)
+        self.txt_synopsis.config(height=10)
+        self.txt_synopsis.grid(column=1, row=0, pady=5, padx=5, sticky=ttk.NSEW)
+
+        self.txt_parametre = Text(self.para)
+        self.txt_parametre.config(height=10)
+        self.txt_parametre.grid(column=1, row=0, pady=5, padx=5, sticky=ttk.NSEW)
+
+        self.txt_exemples = Text(self.ex)
+        self.txt_exemples.config(height=10)
+        self.txt_exemples.grid(column=1, row=0, pady=5, padx=5, sticky=ttk.NSEW)
+
 
         self.nom.grid(column=1, row=0, pady=5, padx=5, sticky=ttk.W)
-        #self.texte_syno.grid(column=1, row=0, pady=5, padx=5, sticky=ttk.W)
         self.synta.grid(column=1, row=0, pady=5, padx=5, sticky=ttk.W)
-        #self.para.grid(column=1, row=0, pady=5, padx=5, sticky=ttk.W)
-        #self.ex.grid(column=1, row=0, pady=5, padx=5, sticky=ttk.W)
 
         self.noms.pack(expand=False, fill=ttk.X, side=ttk.TOP, anchor=ttk.N)
         self.syno.pack(expand=False, fill=ttk.X, side=ttk.TOP, anchor=ttk.N)
@@ -181,17 +226,19 @@ class Editions(ttk.Toplevel):
             style="danger-outline",
             width=20
         )
-        self.annuler.grid(column=0, row=0, pady=5, padx=5, sticky=ttk.W)
+        self.annuler.grid(column=1, row=0, pady=5, padx=5, sticky=ttk.E)
 
         # Création du bouton Sauvegarder
         self.save = ttk.Button(
             self.bouton,
             command="",
             text="Sauvegarder",
-            style="success-outline",
+            style="warning-outline",
             width=20
         )
-        self.save.grid(column=1, row=0, pady=5, padx=5, sticky=ttk.W)
+        self.save.grid(column=2, row=0, pady=10, padx=5, sticky=ttk.E)
+
+        self.position_center()
 
 
 
@@ -202,6 +249,7 @@ class Progress(ttk.Toplevel):
         self.geometry("521x397")
         self.iconbitmap("Logo.ico")
         self.app = app
+        self.position_center()
 
         self.my_fond = PhotoImage(file="Logo_tfe.png")
         self.my_background = ttk.Label(self, image=self.my_fond)
@@ -218,6 +266,7 @@ class Progress(ttk.Toplevel):
 
         self.progression()
 
+
     def progression(self):
         for i in range(100):
             self.my_progress["value"] = i
@@ -231,6 +280,7 @@ class Progress(ttk.Toplevel):
     def done(self):
         self.destroy()
         self.app.deiconify()
+
 
 
 if __name__ == "__main__":
