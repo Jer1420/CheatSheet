@@ -1,3 +1,4 @@
+import sys
 import time
 import webbrowser
 from tkinter import PhotoImage, messagebox
@@ -54,7 +55,7 @@ class Menu_principal(ttk.Window):
         # Création du bouton Exit
         self.exit = ttk.Button(
             self.topbar,
-            command=self.exitapp,
+            command=Exit,
             text="Quitter",
             style="danger-outline",
             width=17,
@@ -96,23 +97,51 @@ class Menu_principal(ttk.Window):
         self.listb.pack(expand=False, fill=ttk.Y, side=ttk.RIGHT, anchor=ttk.N)
         self.texte.pack(expand=True, fill=ttk.BOTH)
 
-    def exitapp(self) -> None:
-        MsgBox = messagebox.askquestion(
-            "Exit", "Voulez vous quitter l'application?", icon="info"
-        )
-        if MsgBox == "yes":
-            messagebox.showinfo("A bientôt", "Merci d'avoir utiliser l'application")
-            self.quit()
-        else:
-            messagebox.showinfo("Good", "Merci " + Emoji.get("winking face").char * 3)
+class Exit(Toplevel):
+    def __init__(self):
+        super().__init__()
+        self.title("")
+        self.iconbitmap("Logo.ico")
+        self.geometry("260x125")
+        self.lb1 = ttk.Frame(self)
+        self.bouton = ttk.Frame(self)
 
+        # Création du bouton Ok
+        self.oui = ttk.Button(
+            self.bouton,
+            command=self.sortir,
+            text="Oui",
+            style="warning-outline",
+            width=10
+        )
+
+        self.non = ttk.Button(
+            self.bouton,
+            command=self.destroy,
+            text="Non",
+            style="warning-outline",
+            width=10
+        )
+
+        lb_pseudo = ttk.Label(self.lb1, text="Voulez vous quitter l'application ?".center(33," "), style="warning")
+        lb_pseudo.grid(column=0, row=0, sticky=ttk.N, pady=10, padx=10)
+        self.lb1.pack(expand=False, fill=ttk.X, side=ttk.TOP, anchor=ttk.N)
+
+        self.oui.grid(column=0, row=0, sticky=ttk.N, pady=10, padx=10)
+        self.bouton.pack(expand=False, fill=ttk.X, side=ttk.TOP, anchor=ttk.N)
+        self.non.grid(column=1, row=0, sticky=ttk.N, pady=10, padx=10)
+        self.bouton.pack(expand=False, fill=ttk.X, side=ttk.TOP, anchor=ttk.N)
+
+
+    def sortir(self):
+        sys.exit(0)
 
 class Apropos(ttk.Toplevel):
     def __init__(self):
         super().__init__(resizable=(False,False))
         self.title("")
         self.iconbitmap("Logo.ico")
-        self.geometry("200x150")
+        self.geometry("220x155")
         self.lb1 = ttk.Frame(self)
         self.lb2 = ttk.Frame(self)
         self.bouton = ttk.Frame(self)
@@ -123,7 +152,7 @@ class Apropos(ttk.Toplevel):
             command=self.destroy,
             text="Ok",
             style="warning-outline",
-            width=20
+            width=10
         )
 
         lb_pseudo = ttk.Label(self.lb1, text="Créé par Jeremy".center(33," "), style="warning")
@@ -135,8 +164,10 @@ class Apropos(ttk.Toplevel):
         lb_pseudo.grid(column=0, row=0, sticky=ttk.N, pady=10, padx=10)
         self.lb2.pack(expand=False, fill=ttk.X, side=ttk.TOP, anchor=ttk.N)
 
-        self.ok.grid(column=0, row=0, sticky=ttk.N, pady=10, padx=10)
+        self.ok.grid(column=1, row=0, sticky=ttk.N, pady=10, padx=10)
         self.bouton.pack(expand=False, fill=ttk.X, side=ttk.TOP, anchor=ttk.N)
+        lb_vide = ttk.Label(self.bouton, text="      ")
+        lb_vide.grid(column=0, row=0, sticky=ttk.N, pady=10, padx=10)
         self.position_center()
 
     def do_open_url(self,event):
