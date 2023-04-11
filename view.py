@@ -1,11 +1,10 @@
 import sys
 import time
 import webbrowser
-from tkinter import PhotoImage, messagebox
 from ttkbootstrap.scrolled import ScrolledText
 from tkinter import *
 import ttkbootstrap as ttk
-from ttkbootstrap.icons import Emoji
+from controller import Commandes, CommandeModel
 
 
 class Menu_principal(ttk.Window):
@@ -42,13 +41,17 @@ class Menu_principal(ttk.Window):
 
         # Création du bouton Edition
         self.edit = ttk.Button(
-            self.topbar, command=Editions, text="Edition", style="warning-outline", width=20
+            self.topbar,
+            command=self.show_editions,
+            text="Edition",
+            style="warning-outline",
+            width=20,
         )
         self.edit.grid(column=0, row=0, pady=5, padx=5, sticky=ttk.W)
 
         # Création du bouton Rechercher
         self.rechercher = ttk.Button(
-            self.rech, command="", text="Rechercher", style="warning-outline", width=17
+            self.rech, command=self.construct_list_command, text="Rechercher", style="warning-outline", width=17
         )
         self.rechercher.grid(column=2, row=0, pady=5, padx=5, sticky=ttk.E)
 
@@ -78,12 +81,11 @@ class Menu_principal(ttk.Window):
         scrollbar = Scrollbar(self.listb)
         scrollbar.grid(column=2, row=1, sticky=ttk.NS)
 
-        mylist = Listbox(self.listb, yscrollcommand=scrollbar.set)
-        for line in range(100):
-            mylist.insert(END, "This is line number " + str(line))
+        self.mylist = Listbox(self.listb, yscrollcommand=scrollbar.set)
+        self.mylist.bind('<Double-1>', self.show_details_command)
 
-        mylist.grid(column=1, row=1, sticky=ttk.NS)
-        scrollbar.config(command=mylist.yview)
+        self.mylist.grid(column=1, row=1, sticky=ttk.NS)
+        scrollbar.config(command=self.mylist.yview)
 
         lb_command = ttk.Label(self.listb, text="Liste des commandes", style="warning")
         lb_command.grid(columnspan=2, row=0, sticky=ttk.EW, pady=10, padx=10)
@@ -97,6 +99,40 @@ class Menu_principal(ttk.Window):
         self.listb.pack(expand=False, fill=ttk.Y, side=ttk.RIGHT, anchor=ttk.N)
         self.texte.pack(expand=True, fill=ttk.BOTH)
 
+    def get_list(self):
+        list_commande = controller.get_name_command(str(self.os_type.get()))
+        new_list_commands = []
+        for command in list_commande:
+            new_list_commands.append(command[0])
+        return new_list_commands
+
+    def show_details_command(self, event):
+        self.texte.delete("1.0", END)
+        command_selected_index = self.mylist.curselection()
+        command_selected_name = self.mylist.get(command_selected_index[0])
+        all_commands_details: list[CommandeModel] = controller.get_detail_command(self.os_type.get(), command_selected_name)
+        for command in all_commands_details:
+            self.texte.insert(ttk.INSERT, f"Nom : {command.nom_commandes}\n\n")
+            self.texte.insert(ttk.INSERT, f"Syntaxe : {command.syntaxe_commandes}\n\n")
+            self.texte.insert(ttk.INSERT, f"Synopsys : {command.synopsys_commandes}\n")
+            self.texte.insert(ttk.INSERT, f"Paramètres : {command.parametre_commandes}\n")
+            self.texte.insert(ttk.INSERT, f"Exemples : {command.exemple_commandes}\n")
+    def construct_list_command(self):
+        self.mylist.delete(0, END)
+        for command in self.get_list():
+            self.mylist.insert(END, command)
+
+    def show_editions(self):
+        edit = Editions()
+        edit.controller = self.controller
+
+    @property
+    def controller(self):
+        return self._controller
+
+    @controller.setter
+    def controller(self, value):
+        self._controller = value
 class Exit(Toplevel):
     def __init__(self):
         super().__init__()
@@ -112,7 +148,7 @@ class Exit(Toplevel):
             command=self.sortir,
             text="Oui",
             style="warning-outline",
-            width=10
+            width=10,
         )
 
         self.non = ttk.Button(
@@ -120,10 +156,14 @@ class Exit(Toplevel):
             command=self.destroy,
             text="Non",
             style="warning-outline",
-            width=10
+            width=10,
         )
 
-        lb_pseudo = ttk.Label(self.lb1, text="Voulez vous quitter l'application ?".center(33," "), style="warning")
+        lb_pseudo = ttk.Label(
+            self.lb1,
+            text="Voulez vous quitter l'application ?".center(33, " "),
+            style="warning",
+        )
         lb_pseudo.grid(column=0, row=0, sticky=ttk.N, pady=10, padx=10)
         self.lb1.pack(expand=False, fill=ttk.X, side=ttk.TOP, anchor=ttk.N)
 
@@ -132,13 +172,13 @@ class Exit(Toplevel):
         self.non.grid(column=1, row=0, sticky=ttk.N, pady=10, padx=10)
         self.bouton.pack(expand=False, fill=ttk.X, side=ttk.TOP, anchor=ttk.N)
 
-
     def sortir(self):
         sys.exit(0)
 
+
 class Apropos(ttk.Toplevel):
     def __init__(self):
-        super().__init__(resizable=(False,False))
+        super().__init__(resizable=(False, False))
         self.title("")
         self.iconbitmap("Logo.ico")
         self.geometry("220x155")
@@ -152,15 +192,19 @@ class Apropos(ttk.Toplevel):
             command=self.destroy,
             text="Ok",
             style="warning-outline",
-            width=10
+            width=10,
         )
 
-        lb_pseudo = ttk.Label(self.lb1, text="Créé par Jeremy".center(33," "), style="warning")
+        lb_pseudo = ttk.Label(
+            self.lb1, text="Créé par Jeremy".center(33, " "), style="warning"
+        )
         lb_pseudo.grid(column=0, row=0, sticky=ttk.N, pady=10, padx=10)
         self.lb1.pack(expand=False, fill=ttk.X, side=ttk.TOP, anchor=ttk.N)
 
-        lb_pseudo = ttk.Label(self.lb2, text="https://github.com/Jer1420".center(10," "), style="warning")
-        lb_pseudo.bind("<Button-1>",self.do_open_url)
+        lb_pseudo = ttk.Label(
+            self.lb2, text="https://github.com/Jer1420".center(10, " "), style="warning"
+        )
+        lb_pseudo.bind("<Button-1>", self.do_open_url)
         lb_pseudo.grid(column=0, row=0, sticky=ttk.N, pady=10, padx=10)
         self.lb2.pack(expand=False, fill=ttk.X, side=ttk.TOP, anchor=ttk.N)
 
@@ -170,17 +214,16 @@ class Apropos(ttk.Toplevel):
         lb_vide.grid(column=0, row=0, sticky=ttk.N, pady=10, padx=10)
         self.position_center()
 
-    def do_open_url(self,event):
+    def do_open_url(self, event):
         webbrowser.open("https://github.com/Jer1420")
 
 
 class Editions(ttk.Toplevel):
     def __init__(self):
-        super().__init__(resizable=(False,False))
+        super().__init__(resizable=(False, False))
         self.title("Edition")
         self.iconbitmap("Logo.ico")
         self.geometry("1250x830")
-
 
         self._nom = ttk.StringVar()
         self._syntaxe = ttk.StringVar()
@@ -192,11 +235,11 @@ class Editions(ttk.Toplevel):
         self.ex = ttk.Frame(self)
         self.bouton = ttk.Frame(self)
 
-        lb_nom = ttk.Label(self.noms, text= "Nom :        ", style="warning")
+        lb_nom = ttk.Label(self.noms, text="Nom :        ", style="warning")
         lb_syno = ttk.Label(self.syno, text="Synopsis :   ", style="warning")
-        lb_syn = ttk.Label(self.syn, text=  "Syntaxe :    ", style="warning")
+        lb_syn = ttk.Label(self.syn, text="Syntaxe :    ", style="warning")
         lb_para = ttk.Label(self.para, text="Paramètres :", style="warning")
-        lb_ex = ttk.Label(self.ex, text=    "Exemples :  ", style="warning")
+        lb_ex = ttk.Label(self.ex, text="Exemples :  ", style="warning")
         lb_invisible = ttk.Label(self.bouton, text="")
 
         lb_nom.grid(column=0, row=0, sticky=ttk.EW, pady=10, padx=10)
@@ -207,13 +250,15 @@ class Editions(ttk.Toplevel):
         lb_invisible.grid(column=0, row=0, sticky=ttk.EW, pady=10, padx=10)
 
         self.nom = ttk.Entry(self.noms, textvariable=self._nom, width=115, style="dark")
-        self.synta = ttk.Entry(self.syn, textvariable=self._syntaxe, width=141, style="dark")
+        self.synta = ttk.Entry(
+            self.syn, textvariable=self._syntaxe, width=141, style="dark"
+        )
 
         self.nom.columnconfigure(1, weight=1)
-        self.syno.columnconfigure(1,weight=1)
-        self.synta.columnconfigure(1,weight=1)
-        self.para.columnconfigure(1,weight=1)
-        self.ex.columnconfigure(1,weight=1)
+        self.syno.columnconfigure(1, weight=1)
+        self.synta.columnconfigure(1, weight=1)
+        self.para.columnconfigure(1, weight=1)
+        self.ex.columnconfigure(1, weight=1)
 
         self.txt_synopsis = Text(self.syno)
         self.txt_synopsis.config(height=10)
@@ -226,7 +271,6 @@ class Editions(ttk.Toplevel):
         self.txt_exemples = Text(self.ex)
         self.txt_exemples.config(height=10)
         self.txt_exemples.grid(column=1, row=0, pady=5, padx=5, sticky=ttk.NSEW)
-
 
         self.nom.grid(column=1, row=0, pady=5, padx=5, sticky=ttk.W)
         self.synta.grid(column=1, row=0, pady=5, padx=5, sticky=ttk.W)
@@ -255,22 +299,49 @@ class Editions(ttk.Toplevel):
             command=self.destroy,
             text="Annuler",
             style="danger-outline",
-            width=20
+            width=20,
         )
         self.annuler.grid(column=1, row=0, pady=5, padx=5, sticky=ttk.E)
 
         # Création du bouton Sauvegarder
         self.save = ttk.Button(
             self.bouton,
-            command="",
+            command=self.do_add,
             text="Sauvegarder",
             style="warning-outline",
-            width=20
+            width=20,
         )
         self.save.grid(column=2, row=0, pady=10, padx=5, sticky=ttk.E)
 
         self.position_center()
 
+
+    def reset(self):
+        self.os_type.set("")
+        self._nom.set("")
+        self.txt_synopsis.delete("1.0", ttk.END)
+        self._syntaxe.set("")
+        self.txt_parametre.delete("1.0", ttk.END)
+        self.txt_exemples.delete("1.0", ttk.END)
+
+    def do_add(self):
+        os: str = self.os_type.get()
+        name: str = self._nom.get()
+        synopsis: str = self.txt_synopsis.get("1.0", ttk.END)
+        syntax: str = self._syntaxe.get()
+        param: str = self.txt_parametre.get("1.0", ttk.END)
+        exemple: str = self.txt_exemples.get("1.0", ttk.END)
+
+        self.controller.add(os, name, synopsis, syntax, param, exemple)
+        self.reset()
+
+    @property
+    def controller(self):
+        return self._controller
+
+    @controller.setter
+    def controller(self, value):
+        self._controller = value
 
 
 class Progress(ttk.Toplevel):
@@ -294,9 +365,7 @@ class Progress(ttk.Toplevel):
             value=0,
         )
         self.my_progress.pack(pady=190)
-
         self.progression()
-
 
     def progression(self):
         for i in range(100):
@@ -313,8 +382,9 @@ class Progress(ttk.Toplevel):
         self.app.deiconify()
 
 
-
 if __name__ == "__main__":
-    test = Menu_principal()
-    progression = Progress(test)
+    app = Menu_principal()
+    controller = Commandes()
+    app.controller = controller
+    progression = Progress(app)
     progression.mainloop()
