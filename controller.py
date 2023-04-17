@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 import sqlite3
 from contextlib import closing
 
+
 @dataclasses.dataclass
 class CommandeModel:
     os_commandes: str
@@ -18,12 +19,13 @@ class Commandes:
     def __init__(self):
         self.data = sqlite3.connect("data.db")  # creation de la base de donnée
         self.create_table()
+
     @property
     def cursor(self) -> sqlite3.Cursor:
         return self.data.cursor()
 
-    #def commit(self):
-        #self.database.commit()
+    # def commit(self):
+    # self.database.commit()
 
     def create_table(self):
         sql = """ CREATE TABLE IF NOT EXISTS T_Commandes (
@@ -40,19 +42,42 @@ class Commandes:
             cursor.execute(sql)
             self.data.commit()
 
-    def add(self, os_commandes:str, nom_commandes:str, synopsys_commandes:str , syntaxe_commandes:str , parametre_commandes:str , exemple_commandes:str):
+    def add(
+        self,
+        os_commandes: str,
+        nom_commandes: str,
+        synopsys_commandes: str,
+        syntaxe_commandes: str,
+        parametre_commandes: str,
+        exemple_commandes: str,
+    ):
         sql = """INSERT INTO T_commandes
         (os_commandes, nom_commandes, synopsys_commandes, syntaxe_commandes, parametre_commandes, exemple_commandes)
         VALUES(?, ?, ?, ?, ?, ? );
         """
         with closing(self.cursor) as cursor:
-            cursor.execute(sql, [os_commandes, nom_commandes, synopsys_commandes, syntaxe_commandes, parametre_commandes, exemple_commandes])
+            cursor.execute(
+                sql,
+                [
+                    os_commandes,
+                    nom_commandes,
+                    synopsys_commandes,
+                    syntaxe_commandes,
+                    parametre_commandes,
+                    exemple_commandes,
+                ],
+            )
             self.data.commit()
 
     def get_name_command(self, os: str):
         sql = """SELECT nom_commandes from T_commandes where os_commandes = ?"""
         with closing(self.cursor) as cursor:
-            result = cursor.execute(sql, [os,])
+            result = cursor.execute(
+                sql,
+                [
+                    os,
+                ],
+            )
             return result.fetchall()
 
     def get_detail_command(self, os: str, command_name: str):
@@ -66,6 +91,16 @@ class Commandes:
                 synopsys_commandes=row[3],
                 syntaxe_commandes=row[4],
                 parametre_commandes=row[5],
-                exemple_commandes=row[6]
+                exemple_commandes=row[6],
             )
             return result.fetchall()
+
+
+    def delete(self):
+        pass
+
+    def search(self):
+        pass
+
+    def modified(self):
+        pass

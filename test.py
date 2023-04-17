@@ -64,19 +64,26 @@ class Test(ttk.Window):
 
 
 class TopTest(ttk.Toplevel):
-    def __init__(self,app):
+    def __init__(self, app):
         super().__init__()
         self.title("Chargement")
         self.geometry("521x397")
         self.iconbitmap("Logo.ico")
         self.app = app
 
-        #self.after(2000,self.done)
+        # self.after(2000,self.done)
 
-        self.my_fond = PhotoImage(file="Logo_tfe.png")
+        self.my_fond = PhotoImage(file="images/Logo_tfe.png")
         self.my_background = ttk.Label(self, image=self.my_fond)
         self.my_background.place(x=0, y=0, relwidth=1, relheight=1)
-        self.my_progress = ttk.Progressbar(self, style="warning-striped", maximum=100, mode="determinate", length=300, value=0)
+        self.my_progress = ttk.Progressbar(
+            self,
+            style="warning-striped",
+            maximum=100,
+            mode="determinate",
+            length=300,
+            value=0,
+        )
         self.my_progress.pack(pady=190)
 
         self.progression()
@@ -88,18 +95,18 @@ class TopTest(ttk.Toplevel):
             self.my_progress.update()
             self.update_idletasks()
         else:
-            #self.withdraw()
-            #sheet_cheat_window = Sheetcheat()
+            # self.withdraw()
+            # sheet_cheat_window = Sheetcheat()
             self.app.deiconify()
             self.destroy()
-            #sheet_cheat_window.mainloop()
+            # sheet_cheat_window.mainloop()
 
     def done(self):
         self.destroy()
         self.app.deiconify()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test = Test()
     toptest = TopTest(test)
     toptest.mainloop()
