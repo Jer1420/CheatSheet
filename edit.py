@@ -2,11 +2,13 @@ import ttkbootstrap as ttk
 
 
 class Edit(ttk.Toplevel):
-    def __init__(self):
+    def __init__(self, parent=None, command_to_modif=None):
         super().__init__(resizable=(False, False))
         self.title("Edition")
         self.iconbitmap("images/Logo.ico")
         self.geometry("1250x830")
+        self.parent = parent
+        self.command_to_edit = command_to_modif
 
         self._nom = ttk.StringVar()
         self._syntaxe = ttk.StringVar()
@@ -83,6 +85,7 @@ class Edit(ttk.Toplevel):
             textvariable=self.os_type,
             style="dark",
         )
+        self.cb.current(0)
         self.cb.grid(column=2, row=0, pady=5, padx=5, sticky=ttk.E)
 
         # Create button close
@@ -106,15 +109,35 @@ class Edit(ttk.Toplevel):
         self.save.grid(column=2, row=0, pady=10, padx=5, sticky=ttk.E)
 
         self.position_center()
+        if self.command_to_edit is not None:
+            self.fill_data()
+
+
+    def fill_data(self):
+        self.os_type.set(self.command_to_edit.os_commandes)
+        self._nom.set(self.command_to_edit.nom_commandes)
+        self.txt_synopsis.insert(ttk.INSERT, self.command_to_edit.synopsys_commandes)
+        self._syntaxe.set(self.command_to_edit.syntaxe_commandes)
+        self.txt_parametre.insert(ttk.INSERT, self.command_to_edit.parametre_commandes)
+        self.txt_exemples.insert(ttk.INSERT, self.command_to_edit.exemple_commandes)
 
     # Reset of inputs
     def reset(self):
-        self.os_type.set("")
         self._nom.set("")
         self.txt_synopsis.delete("1.0", ttk.END)
         self._syntaxe.set("")
         self.txt_parametre.delete("1.0", ttk.END)
         self.txt_exemples.delete("1.0", ttk.END)
+
+    def verif_if_command_exist(self) -> bool:
+        all_commands = self.controller.get_name_command(str(self.os_type.get()))
+        all_commands_name = []
+        for command_name in all_commands:
+            all_commands_name.append(command_name[0])
+        if self._nom.get() in all_commands_name:
+            return True
+        else:
+            return False
 
     # Add in DB
     def do_add(self):
@@ -124,9 +147,23 @@ class Edit(ttk.Toplevel):
         syntax: str = self._syntaxe.get()
         param: str = self.txt_parametre.get("1.0", ttk.END)
         exemple: str = self.txt_exemples.get("1.0", ttk.END)
-
-        self.controller.add(os, name, synopsis, syntax, param, exemple)
-        self.reset()
+        if self.command_to_edit is None:
+            if not self.verif_if_command_exist() and name != "":
+                self.controller.add(os, name, synopsis, syntax, param, exemple)
+                self.reset()
+                print("Commande bien sauvegarder !")
+                self.parent.construct_list_command()
+            elif self.verif_if_command_exist():
+                print("Commande existante")
+            elif name == "":
+                print("Veuillez entrez un nom de commande !")
+        else:
+            if name != "":
+                self.controller.modified(os, name, synopsis, syntax, param, exemple, self.command_to_edit.id_commandes)
+                self.parent.construct_list_command()
+                self.destroy()
+            else:
+                print("Rentre un nom !")
 
     @property
     def controller(self):

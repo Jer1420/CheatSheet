@@ -16,6 +16,7 @@ class Main_Window(ttk.Window):
         self.iconbitmap("images/Logo.ico")
         self.geometry("1000x600")
 
+
         # Create frames
         self.topbar = ttk.Frame(self)
         self.topbar.columnconfigure(4, weight=1)
@@ -46,14 +47,14 @@ class Main_Window(ttk.Window):
             command=self.show_editions,
             text="Edition",
             style="warning-outline",
-            width=20,
+            width=20
         )
         self.edit.grid(column=0, row=0, pady=5, padx=5, sticky=ttk.W)
 
         # Create button editing
         self.new = ttk.Button(
             self.topbar,
-            command="",
+            command=self.show_modif,
             text="Modifier",
             style="warning-outline",
             width=20,
@@ -63,7 +64,7 @@ class Main_Window(ttk.Window):
         # Create button delete
         self.new = ttk.Button(
             self.topbar,
-            command="",
+            command=self.delete,
             text="Supprimer",
             style="warning-outline",
             width=20,
@@ -73,7 +74,7 @@ class Main_Window(ttk.Window):
         # Create button research
         self.rechercher = ttk.Button(
             self.rech,
-            command=self.construct_list_command,
+            command=self.search,
             text="Rechercher",
             style="warning-outline",
             width=17,
@@ -97,8 +98,10 @@ class Main_Window(ttk.Window):
             values=["Windows", "Linux"],
             state=ttk.READONLY,
             textvariable=self.os_type,
-            style="dark",
+            style="dark.TCombobox",
         )
+        self.cb.current(0)
+        self.cb.bind("<<ComboboxSelected>>", self.construct_list_command)
         self.cb.grid(column=1, row=0, pady=5, padx=5, sticky=ttk.E)
 
         # Create list box
@@ -124,6 +127,12 @@ class Main_Window(ttk.Window):
         self.listb.pack(expand=False, fill=ttk.Y, side=ttk.RIGHT, anchor=ttk.N)
         self.texte.pack(expand=True, fill=ttk.BOTH)
 
+    def search(self):
+        self.mylist.delete(0, END)
+        all_commande_name_search = controller.search(str(self._recherche.get()), str(self.os_type.get()))
+        for command_name in all_commande_name_search:
+            self.mylist.insert(END, command_name[0])
+
     def get_list(self):
         list_commande = controller.get_name_command(str(self.os_type.get()))
         new_list_commands = []
@@ -131,8 +140,17 @@ class Main_Window(ttk.Window):
             new_list_commands.append(command[0])
         return new_list_commands
 
-    def show_details_command(self, event):
+    def delete(self):
+        command_selected_index = self.mylist.curselection()
+        command_selected_name = self.mylist.get(command_selected_index[0])
+        all_command = controller.get_detail_command(
+            self.os_type.get(), command_selected_name
+        )
+        for command in all_command:
+            controller.delete(command.id_commandes)
+        self.construct_list_command()
 
+    def show_details_command(self, event):
         self.texte.delete("1.0", END)
         command_selected_index = self.mylist.curselection()
         command_selected_name = self.mylist.get(command_selected_index[0])
@@ -148,14 +166,26 @@ class Main_Window(ttk.Window):
             )
             self.texte.insert(ttk.INSERT, f"Exemples :\n{command.exemple_commandes}\n")
 
-    def construct_list_command(self):
+    def construct_list_command(self, event=None):
         self.mylist.delete(0, END)
         for command in self.get_list():
             self.mylist.insert(END, command)
 
     def show_editions(self):
-        edit = Edit()
+        edit = Edit(parent=self)
         edit.controller = self.controller
+
+    def show_modif(self):
+        command_selected_index = self.mylist.curselection()
+        try:
+            command_selected_name = self.mylist.get(command_selected_index[0])
+            all_commands_details: list[CommandeModel] = controller.get_detail_command(
+                self.os_type.get(), command_selected_name
+            )
+            edit = Edit(parent=self, command_to_modif=all_commands_details[0])
+            edit.controller = self.controller
+        except IndexError:
+            print("Selectionne une commade à modifier stp !")
 
     @property
     def controller(self):
@@ -170,5 +200,7 @@ if __name__ == "__main__":
     app = Main_Window()
     controller = Commandes()
     app.controller = controller
+    app.construct_list_command()
     progression = Progress(app)
     progression.mainloop()
+

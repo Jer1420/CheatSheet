@@ -32,8 +32,8 @@ class Progress(ttk.Toplevel):
             self.my_progress.update()
             self.update_idletasks()
         else:
-            self.app.deiconify()
-            self.destroy()
+            self.done()
+
 
     def done(self):
         self.destroy()

@@ -43,5 +43,7 @@ class Exit(Toplevel):
         self.non.grid(column=1, row=0, sticky=ttk.N, pady=10, padx=10)
         self.bouton.pack(expand=False, fill=ttk.X, side=ttk.TOP, anchor=ttk.N)
 
+        self.position_center()
+
     def sortir(self):
         sys.exit(0)
