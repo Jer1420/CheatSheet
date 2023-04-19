@@ -6,6 +6,7 @@ from exit import Exit
 from info import About
 from edit import Edit
 from progress import Progress
+from select_com import Select_com
 
 
 class Main_Window(ttk.Window):
@@ -51,7 +52,7 @@ class Main_Window(ttk.Window):
         )
         self.edit.grid(column=0, row=0, pady=5, padx=5, sticky=ttk.W)
 
-        # Create button editing
+        # Create button modified
         self.new = ttk.Button(
             self.topbar,
             command=self.show_modif,
@@ -141,14 +142,17 @@ class Main_Window(ttk.Window):
         return new_list_commands
 
     def delete(self):
-        command_selected_index = self.mylist.curselection()
-        command_selected_name = self.mylist.get(command_selected_index[0])
-        all_command = controller.get_detail_command(
-            self.os_type.get(), command_selected_name
-        )
-        for command in all_command:
-            controller.delete(command.id_commandes)
-        self.construct_list_command()
+        try:
+            command_selected_index = self.mylist.curselection()
+            command_selected_name = self.mylist.get(command_selected_index[0])
+            all_command = controller.get_detail_command(
+                self.os_type.get(), command_selected_name
+            )
+            for command in all_command:
+                controller.delete(command.id_commandes)
+            self.construct_list_command()
+        except IndexError:
+            sel_com = Select_com()
 
     def show_details_command(self, event):
         self.texte.delete("1.0", END)
@@ -185,7 +189,7 @@ class Main_Window(ttk.Window):
             edit = Edit(parent=self, command_to_modif=all_commands_details[0])
             edit.controller = self.controller
         except IndexError:
-            print("Selectionne une commade à modifier stp !")
+            sel = Select_com()
 
     @property
     def controller(self):

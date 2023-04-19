@@ -1,4 +1,8 @@
 import ttkbootstrap as ttk
+from save import Save
+from com_exist import Exist
+from com_modif import Modif
+from entry_name import Name
 
 
 class Edit(ttk.Toplevel):
@@ -151,19 +155,22 @@ class Edit(ttk.Toplevel):
             if not self.verif_if_command_exist() and name != "":
                 self.controller.add(os, name, synopsis, syntax, param, exemple)
                 self.reset()
-                print("Commande bien sauvegarder !")
+                s = Save()
                 self.parent.construct_list_command()
             elif self.verif_if_command_exist():
-                print("Commande existante")
+                ex = Exist()
             elif name == "":
-                print("Veuillez entrez un nom de commande !")
+                na = Name()
         else:
-            if name != "":
+            if not self.verif_if_command_exist() != "":
                 self.controller.modified(os, name, synopsis, syntax, param, exemple, self.command_to_edit.id_commandes)
                 self.parent.construct_list_command()
                 self.destroy()
-            else:
-                print("Rentre un nom !")
+                mod = Modif()
+            elif name == "":
+                na = Name()
+            elif self.verif_if_command_exist():
+                ex = Exist()
 
     @property
     def controller(self):
