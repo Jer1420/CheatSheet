@@ -13,7 +13,7 @@ class Main_Window(ttk.Window):
     def __init__(self):
         super().__init__(themename="superhero")
         self.withdraw()
-        self.title("SheetCheat")
+        self.title("CheatSheet")
         self.iconbitmap("images/Logo.ico")
         self.geometry("1000x600")
 
