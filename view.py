@@ -7,6 +7,7 @@ from info import About
 from edit import Edit
 from progress import Progress
 from select_com import Select_com
+from entry_word import Word
 
 
 class Main_Window(ttk.Window):
@@ -16,7 +17,6 @@ class Main_Window(ttk.Window):
         self.title("CheatSheet")
         self.iconbitmap("images/Logo.ico")
         self.geometry("1000x600")
-
 
         # Create frames
         self.topbar = ttk.Frame(self)
@@ -48,7 +48,7 @@ class Main_Window(ttk.Window):
             command=self.show_editions,
             text="Edition",
             style="warning-outline",
-            width=20
+            width=20,
         )
         self.edit.grid(column=0, row=0, pady=5, padx=5, sticky=ttk.W)
 
@@ -120,8 +120,12 @@ class Main_Window(ttk.Window):
         lb_command.grid(columnspan=2, row=0, sticky=ttk.EW, pady=10, padx=10)
 
         # Create ScrolledText
-        self.texte = ScrolledText(self, padding=5, autohide=True, hbar=False, wrap=ttk.WORD)
-        self.texte.text.bind("<Key>", lambda e: "break")  # Permet de bloquer l'écriture dans le ScrolledText
+        self.texte = ScrolledText(
+            self, padding=5, autohide=True, hbar=False, wrap=ttk.WORD
+        )
+        self.texte.text.bind(
+            "<Key>", lambda e: "break"
+        )  # Permet de bloquer l'écriture dans le ScrolledText
         # Place Frame
         self.topbar.pack(expand=False, fill=ttk.X, side=ttk.TOP, anchor=ttk.N)
         self.rech.pack(expand=False, fill=ttk.X, side=ttk.TOP, anchor=ttk.N)
@@ -129,10 +133,15 @@ class Main_Window(ttk.Window):
         self.texte.pack(expand=True, fill=ttk.BOTH)
 
     def search(self):
-        self.mylist.delete(0, END)
-        all_commande_name_search = controller.search(str(self._recherche.get()), str(self.os_type.get()))
-        for command_name in all_commande_name_search:
-            self.mylist.insert(END, command_name[0])
+        if str(self._recherche.get()) != "":
+            self.mylist.delete(0, END)
+            all_commande_name_search = controller.search(
+                str(self._recherche.get()), str(self.os_type.get())
+            )
+            for command_name in all_commande_name_search:
+                self.mylist.insert(END, command_name[0])
+        else:
+            wrd = Word()
 
     def get_list(self):
         list_commande = controller.get_name_command(str(self.os_type.get()))
@@ -207,4 +216,3 @@ if __name__ == "__main__":
     app.construct_list_command()
     progression = Progress(app)
     progression.mainloop()
-

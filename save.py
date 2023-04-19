@@ -20,7 +20,9 @@ class Save(ttk.Toplevel):
         )
 
         lb_pseudo = ttk.Label(
-            self.lb1, text="La commande est sauvegarder".center(33, " "), style="warning"
+            self.lb1,
+            text="La commande est sauvegarder".center(33, " "),
+            style="warning",
         )
         lb_pseudo.grid(column=0, row=0, sticky=ttk.N, pady=10, padx=10)
         self.lb1.pack(expand=False, fill=ttk.X, side=ttk.TOP, anchor=ttk.N)
@@ -31,5 +33,3 @@ class Save(ttk.Toplevel):
         lb_vide.grid(column=0, row=0, sticky=ttk.N, pady=10, padx=10)
 
         self.position_center()
-
-

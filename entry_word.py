@@ -1,12 +1,12 @@
 import ttkbootstrap as ttk
 
 
-class Select_com(ttk.Toplevel):
+class Word(ttk.Toplevel):
     def __init__(self):
         super().__init__(resizable=(False, False))
         self.title("")
         self.iconbitmap("images/Logo.ico")
-        self.geometry("245x120")
+        self.geometry("258x120")
         self.lb1 = ttk.Frame(self)
         self.bouton = ttk.Frame(self)
 
@@ -20,7 +20,7 @@ class Select_com(ttk.Toplevel):
         )
 
         lb_pseudo = ttk.Label(
-            self.lb1, text="Selectionnez une commande".center(32, " "), style="warning"
+            self.lb1, text="Remplissez le champs de recherche".center(32, " "), style="warning"
         )
         lb_pseudo.grid(column=0, row=0, sticky=ttk.N, pady=10, padx=10)
         self.lb1.pack(expand=False, fill=ttk.X, side=ttk.TOP, anchor=ttk.N)

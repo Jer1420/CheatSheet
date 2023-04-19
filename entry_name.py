@@ -31,5 +31,3 @@ class Name(ttk.Toplevel):
         lb_vide.grid(column=0, row=0, sticky=ttk.N, pady=10, padx=10)
 
         self.position_center()
-
-

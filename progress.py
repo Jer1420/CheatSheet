@@ -34,7 +34,6 @@ class Progress(ttk.Toplevel):
         else:
             self.done()
 
-
     def done(self):
         self.destroy()
         self.app.deiconify()

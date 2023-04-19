@@ -116,7 +116,6 @@ class Edit(ttk.Toplevel):
         if self.command_to_edit is not None:
             self.fill_data()
 
-
     def fill_data(self):
         self.os_type.set(self.command_to_edit.os_commandes)
         self._nom.set(self.command_to_edit.nom_commandes)
@@ -138,6 +137,8 @@ class Edit(ttk.Toplevel):
         all_commands_name = []
         for command_name in all_commands:
             all_commands_name.append(command_name[0])
+        if self.command_to_edit is not None:
+            all_commands_name.remove(self.command_to_edit.nom_commandes)
         if self._nom.get() in all_commands_name:
             return True
         else:
@@ -162,8 +163,16 @@ class Edit(ttk.Toplevel):
             elif name == "":
                 na = Name()
         else:
-            if not self.verif_if_command_exist() != "":
-                self.controller.modified(os, name, synopsis, syntax, param, exemple, self.command_to_edit.id_commandes)
+            if not self.verif_if_command_exist() and name != "":
+                self.controller.modified(
+                    os,
+                    name,
+                    synopsis,
+                    syntax,
+                    param,
+                    exemple,
+                    self.command_to_edit.id_commandes,
+                )
                 self.parent.construct_list_command()
                 self.destroy()
                 mod = Modif()

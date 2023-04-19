@@ -103,31 +103,36 @@ class Commandes:
 
     def search(self, search: str, os: str):
         search = f"%{search}%"
-        sql = """SELECT nom_commandes FROM T_Commandes WHERE (os_commandes = ?) AND (nom_commandes LIKE ?) OR (synopsys_commandes LIKE ?)"""
+        sql = """SELECT nom_commandes FROM T_Commandes WHERE os_commandes = ? AND ((nom_commandes LIKE ?) OR (synopsys_commandes LIKE ?))"""
         with closing(self.cursor) as cursor:
             sql_result = cursor.execute(sql, [os, search, search])
             return sql_result.fetchall()
 
-    def modified(self,
+    def modified(
+        self,
         os_commandes: str,
         nom_commandes: str,
         synopsys_commandes: str,
         syntaxe_commandes: str,
         parametre_commandes: str,
         exemple_commandes: str,
-        id_commandes: int):
+        id_commandes: int,
+    ):
         sql = """UPDATE T_Commandes SET os_commandes = ?, 
         nom_commandes = ?, 
         synopsys_commandes = ?, 
         syntaxe_commandes = ?, parametre_commandes = ?, exemple_commandes = ? WHERE id_commandes = ?"""
         with closing(self.cursor) as cursor:
-            cursor.execute(sql, [
-                os_commandes,
-                nom_commandes,
-                synopsys_commandes,
-                syntaxe_commandes,
-                parametre_commandes,
-                exemple_commandes,
-                id_commandes
-            ])
+            cursor.execute(
+                sql,
+                [
+                    os_commandes,
+                    nom_commandes,
+                    synopsys_commandes,
+                    syntaxe_commandes,
+                    parametre_commandes,
+                    exemple_commandes,
+                    id_commandes,
+                ],
+            )
             self.data.commit()
