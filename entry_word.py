@@ -20,7 +20,9 @@ class Word(ttk.Toplevel):
         )
 
         lb_pseudo = ttk.Label(
-            self.lb1, text="Remplissez le champs de recherche".center(32, " "), style="warning"
+            self.lb1,
+            text="Remplissez le champ de recherche".center(32, " "),
+            style="warning",
         )
         lb_pseudo.grid(column=0, row=0, sticky=ttk.N, pady=10, padx=10)
         self.lb1.pack(expand=False, fill=ttk.X, side=ttk.TOP, anchor=ttk.N)

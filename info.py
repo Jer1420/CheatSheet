@@ -22,13 +22,13 @@ class About(ttk.Toplevel):
         )
 
         lb_pseudo = ttk.Label(
-            self.lb1, text="Créé par Jeremy".center(33, " "), style="warning"
+            self.lb1, text="Créé par Jeremy".center(40, " "), style="warning"
         )
         lb_pseudo.grid(column=0, row=0, sticky=ttk.N, pady=10, padx=10)
         self.lb1.pack(expand=False, fill=ttk.X, side=ttk.TOP, anchor=ttk.N)
 
         lb_pseudo = ttk.Label(
-            self.lb2, text="https://github.com/Jer1420".center(10, " "), style="warning"
+            self.lb2, text="https://github.com/Jer1420".center(32, " "), style="warning"
         )
         lb_pseudo.bind("<Button-1>", self.do_open_url)
         lb_pseudo.grid(column=0, row=0, sticky=ttk.N, pady=10, padx=10)

@@ -55,17 +55,17 @@ class Edit(ttk.Toplevel):
 
         # Configure text
         self.txt_synopsis = ttk.Text(self.syno)
-        self.txt_synopsis.config(height=10)
+        self.txt_synopsis.config(height=10, wrap=ttk.WORD)
         self.txt_synopsis.grid(column=1, row=0, pady=5, padx=5, sticky=ttk.NSEW)
 
         # Configure text
         self.txt_parametre = ttk.Text(self.para)
-        self.txt_parametre.config(height=10)
+        self.txt_parametre.config(height=10, wrap=ttk.WORD)
         self.txt_parametre.grid(column=1, row=0, pady=5, padx=5, sticky=ttk.NSEW)
 
         # Configure text
         self.txt_exemples = ttk.Text(self.ex)
-        self.txt_exemples.config(height=10)
+        self.txt_exemples.config(height=10, wrap=ttk.WORD)
         self.txt_exemples.grid(column=1, row=0, pady=5, padx=5, sticky=ttk.NSEW)
 
         # Configure grid

@@ -20,7 +20,7 @@ class Modif(ttk.Toplevel):
         )
 
         lb_pseudo = ttk.Label(
-            self.lb1, text="La commande est modifier".center(33, " "), style="warning"
+            self.lb1, text="La commande est modifiée".center(33, " "), style="warning"
         )
         lb_pseudo.grid(column=0, row=0, sticky=ttk.N, pady=10, padx=10)
         self.lb1.pack(expand=False, fill=ttk.X, side=ttk.TOP, anchor=ttk.N)

@@ -32,15 +32,15 @@ class Exit(Toplevel):
 
         lb_pseudo = ttk.Label(
             self.lb1,
-            text="Voulez vous quitter l'application ?".center(33, " "),
+            text="Voulez vous quitter l'application ?".center(39, " "),
             style="warning",
         )
         lb_pseudo.grid(column=0, row=0, sticky=ttk.N, pady=10, padx=10)
         self.lb1.pack(expand=False, fill=ttk.X, side=ttk.TOP, anchor=ttk.N)
 
-        self.oui.grid(column=0, row=0, sticky=ttk.N, pady=10, padx=10)
+        self.oui.grid(column=0, row=0, sticky=ttk.N, pady=10, padx=17)
         self.bouton.pack(expand=False, fill=ttk.X, side=ttk.TOP, anchor=ttk.N)
-        self.non.grid(column=1, row=0, sticky=ttk.N, pady=10, padx=10)
+        self.non.grid(column=1, row=0, sticky=ttk.N, pady=10, padx=0)
         self.bouton.pack(expand=False, fill=ttk.X, side=ttk.TOP, anchor=ttk.N)
 
         self.position_center()

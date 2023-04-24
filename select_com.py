@@ -20,7 +20,7 @@ class Select_com(ttk.Toplevel):
         )
 
         lb_pseudo = ttk.Label(
-            self.lb1, text="Selectionnez une commande".center(32, " "), style="warning"
+            self.lb1, text="Sélectionnez une commande".center(32, " "), style="warning"
         )
         lb_pseudo.grid(column=0, row=0, sticky=ttk.N, pady=10, padx=10)
         self.lb1.pack(expand=False, fill=ttk.X, side=ttk.TOP, anchor=ttk.N)
