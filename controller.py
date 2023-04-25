@@ -24,9 +24,6 @@ class Commandes:
     def cursor(self) -> sqlite3.Cursor:
         return self.data.cursor()
 
-    # def commit(self):
-    # self.database.commit()
-
     def create_table(self):
         sql = """ CREATE TABLE IF NOT EXISTS T_Commandes (
             id_commandes INTEGER PRIMARY KEY AUTOINCREMENT,

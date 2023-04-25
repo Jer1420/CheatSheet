@@ -10,6 +10,7 @@ from select_com import Select_com
 from entry_word import Word
 
 
+
 class Main_Window(ttk.Window):
     def __init__(self):
         super().__init__(themename="superhero")

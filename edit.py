@@ -138,7 +138,10 @@ class Edit(ttk.Toplevel):
         for command_name in all_commands:
             all_commands_name.append(command_name[0])
         if self.command_to_edit is not None:
-            all_commands_name.remove(self.command_to_edit.nom_commandes)
+            try:
+                all_commands_name.remove(self.command_to_edit.nom_commandes)
+            except ValueError as e:
+                print(e)
         if self._nom.get() in all_commands_name:
             return True
         else:
